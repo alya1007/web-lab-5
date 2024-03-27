@@ -36,6 +36,15 @@ if __name__ == "__main__":
                     "h") else Fore.WHITE
                 print(color + tag.get_text() + Fore.RESET)
     elif args.search:
-        print(f"Searching for {args.search}")
+        print(f"{Fore.GREEN}Search results for \"{args.search}\":{Fore.RESET}")
+        response = get(f"https://www.google.com/search?q={args.search}")
+        soup = bs(response.body, "html.parser")
+        headers = soup.select("a h3")
+        for index, header in enumerate(headers, start=1):
+            anchor = header.find_parent("a")
+            print(f"{index}. {Fore.BLUE}{header.get_text()}{Fore.RESET}")
+            print(
+                f"\t{Fore.CYAN}https://www.google.com{anchor.get('href')}{Fore.RESET}")
+
     else:
         parser.print_help()
