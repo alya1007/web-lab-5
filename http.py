@@ -26,20 +26,21 @@ def get(url):
 
     # Wrap the socket with SSL context
     context = ssl.create_default_context()
-    ssl_sock = context.wrap_socket(sock, server_hostname=url_object.netloc)
+    sock = context.wrap_socket(
+        sock, server_hostname=url_object.netloc) if url_object.scheme == "https" else sock
 
-    ssl_sock.connect((url_object.netloc, port))
+    sock.connect((url_object.netloc, port))
 
     request = f"GET {url_object.path}{url_object.query and '?' or ''}{url_object.query} HTTP/1.1\r\n" \
         f"Host: {url_object.netloc}\r\n" \
         f"User-Agent: {USER_AGENT}\r\n" \
         f"Connection: close\r\n\r\n"
 
-    ssl_sock.send(request.encode())
+    sock.send(request.encode())
 
     response_buffer = bytes()
     while True:
-        data = ssl_sock.recv(4096)
+        data = sock.recv(4096)
         if not data:
             break
         response_buffer += data
@@ -49,4 +50,9 @@ def get(url):
     status_line, *headers = http_header.split("\r\n")
     status_code = int(status_line.split(" ")[1])
     headers = dict(header.split(": ", 1) for header in headers)
+    if "Location" in headers:
+        return get(headers["Location"])
     return HttpResponse(status_code, headers, http_body)
+
+
+print(get("http://www.google.com/search?q=python"))
