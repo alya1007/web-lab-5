@@ -20,11 +20,21 @@ if __name__ == "__main__":
         response = get(args.url)
         is_json = response.headers.get(
             "Content-Type").startswith("application/json")
-        print(is_json)
         if is_json:
             print(Fore.GREEN + "JSON Response" + Fore.RESET)
             print(Fore.YELLOW +
                   json.dumps(json.loads(response.body), indent=4) + Fore.RESET)
+        else:
+            print(Fore.GREEN + "HTML Response" + Fore.RESET)
+            soup = bs(response.body, "html.parser")
+            content_tags = soup.find_all(
+                ["p", "h1", "h2", "h3", "h4", "h5", "h6"])
+            for tag in content_tags:
+                if not tag.get_text():
+                    continue
+                color = Fore.BLUE if tag.name == "h1" else Fore.CYAN if tag.name.startswith(
+                    "h") else Fore.WHITE
+                print(color + tag.get_text() + Fore.RESET)
     elif args.search:
         print(f"Searching for {args.search}")
     else:
