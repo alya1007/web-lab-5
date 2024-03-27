@@ -1,5 +1,7 @@
 # Python application for sending requests via websockets
 
+![Demo](./.github/images/demo_go2web.gif)
+
 ## Setup
 
 1. Clone the repository and navigate to the project directory.
