@@ -19,7 +19,7 @@ if __name__ == "__main__":
     if args.url:
         response = get(args.url)
         is_json = response.headers.get(
-            "Content-Type").startswith("application/json")
+            "Content-Type") and response.headers.get("Content-Type").startswith("application/json")
         if is_json:
             print(Fore.GREEN + "JSON Response" + Fore.RESET)
             print(Fore.YELLOW +
