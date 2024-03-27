@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 import argparse
+import json
+from bs4 import BeautifulSoup as bs
+from colorama import Fore
+from http_request import get
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -13,7 +17,14 @@ if __name__ == "__main__":
                         )
     args = parser.parse_args()
     if args.url:
-        print(f"Making request to {args.url}")
+        response = get(args.url)
+        is_json = response.headers.get(
+            "Content-Type").startswith("application/json")
+        print(is_json)
+        if is_json:
+            print(Fore.GREEN + "JSON Response" + Fore.RESET)
+            print(Fore.YELLOW +
+                  json.dumps(json.loads(response.body), indent=4) + Fore.RESET)
     elif args.search:
         print(f"Searching for {args.search}")
     else:
