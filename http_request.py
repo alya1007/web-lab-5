@@ -3,7 +3,6 @@ from typing import Dict
 from urllib.parse import urlparse
 import socket
 import ssl
-from bs4 import BeautifulSoup as bs
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
 
@@ -20,7 +19,7 @@ def extract_url_parts(url):
     return parsed_url.netloc, parsed_url.path, parsed_url.query, parsed_url.scheme
 
 
-def get(url):
+def get(url: str) -> HttpResponse:
     url_object = urlparse(url)
     port = 443 if url_object.scheme == "https" else 80
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -56,4 +55,4 @@ def get(url):
     return HttpResponse(status_code, headers, http_body)
 
 
-print(get("http://www.google.com/search?q=python"))
+# print(get("http://www.google.com/search?q=python"))
